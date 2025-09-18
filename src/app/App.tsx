@@ -1,8 +1,8 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import AppLayout from "@/components/layouts/AppLayout";
-import LeadsPage from "@/pages/LeadsPage";
-import OpportunitiesPage from "@/pages/OpportunitiesPage";
+import AppLayout from "../components/layouts/AppLayout";
+import LeadsPage from "../pages/LeadsPage";
+import OpportunitiesPage from "../pages/OpportunitiesPage";
 
 function App() {
   return (
@@ -16,5 +16,4 @@ function App() {
     </AppLayout>
   );
 }
-
 export default App;
