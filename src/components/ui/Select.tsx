@@ -5,8 +5,8 @@ export type SelectOption = { label: string; value: string };
 export type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
   label?: string;
   error?: string;
-  options?: SelectOption[]; // opcional: pode usar <option> manualmente também
-  placeholder?: string; // aparece como primeira opção desabilitada
+  options?: SelectOption[]; // optional: you can use <option> manually too
+  placeholder?: string; // appears as the first disabled option
 };
 
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(function Select(
@@ -44,14 +44,14 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(function Select(
           </option>
         )}
 
-        {/* Se 'options' for fornecido, renderiza automaticamente */}
+        {/* If 'options' is given, automatically render */}
         {options?.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
           </option>
         ))}
 
-        {/* Fallback: permite uso manual de <option> via 'children' */}
+        {/* Fallback: allows manual use of <option> via 'children' */}
         {children}
       </select>
 
