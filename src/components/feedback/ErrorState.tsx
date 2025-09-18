@@ -26,13 +26,13 @@ export default function ErrorState({
         <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" />
       </svg>
 
-      {/* Título */}
+      {/* Title */}
       <h2 className="mb-2 text-lg font-semibold text-gray-800">{title}</h2>
 
-      {/* Mensagem */}
+      {/* Message */}
       <p className="mb-4 max-w-sm text-sm text-gray-600">{message}</p>
 
-      {/* Botão de retry */}
+      {/* Retry button */}
       {onRetry && (
         <button
           onClick={onRetry}
