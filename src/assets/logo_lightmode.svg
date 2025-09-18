@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 160" width="760" height="160" role="img" aria-labelledby="title desc">
+  <title id="title">Logo Horizontal Mini Seller Console</title>
+  <desc id="desc">Marca com ícone à esquerda e texto Mini Seller Console à direita.</desc>
+
+  <!-- Ícone -->
+  <g transform="translate(16,16)">
+    <!-- Linhas -->
+    <line x1="4" y1="16" x2="24" y2="16" stroke="#0f172a" stroke-width="6" stroke-linecap="round"></line>
+    <line x1="4" y1="28" x2="20" y2="28" stroke="#0f172a" stroke-width="6" stroke-linecap="round"></line>
+    <line x1="4" y1="40" x2="16" y2="40" stroke="#0f172a" stroke-width="6" stroke-linecap="round"></line>
+    <!-- Seta -->
+    <polyline points="24,16 40,32 24,48" fill="none" stroke="#0EA5E9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"></polyline>
+    <!-- Círculo + check -->
+    <circle cx="52" cy="32" r="10" fill="#10B981"></circle>
+    <polyline points="48,32 51,35 56,29" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+  </g>
+
+  <!-- Texto -->
+  <g transform="translate(152,60)" fill="#0f172a">
+    <text font-family="Inter, Arial, sans-serif" font-weight="700" font-size="44" y="0">Mini Seller</text>
+    <text font-family="Inter, Arial, sans-serif" font-weight="500" font-size="36" y="40">Console</text>
+  </g>
+</svg>

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Linhas (leads) -->
+  <line x1="4" y1="16" x2="24" y2="16" stroke="#0f172a" stroke-width="6" stroke-linecap="round"></line>
+  <line x1="4" y1="28" x2="20" y2="28" stroke="#0f172a" stroke-width="6" stroke-linecap="round"></line>
+  <line x1="4" y1="40" x2="16" y2="40" stroke="#0f172a" stroke-width="6" stroke-linecap="round"></line>
+  
+  <!-- Seta em azul -->
+  <polyline points="24,16 40,32 24,48" fill="none" stroke="#0EA5E9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"></polyline>
+  
+  <!-- Círculo verde -->
+  <circle cx="52" cy="32" r="10" fill="#10B981"></circle>
+  
+  <!-- Check branco -->
+  <polyline points="48,32 51,35 56,29" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></polyline>
+</svg>
