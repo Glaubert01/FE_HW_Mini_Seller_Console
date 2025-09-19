@@ -54,6 +54,21 @@ src/
 public/data/           # Seed data (leads.json)
 ```
 
+## 🚀 Live Project
+
+- 📂 **Repository:** [View on GitHub](https://github.com/Glaubert01/FE_HW_Mini_Seller_Console)
+- 🌐 **Live Demo:** [Check it out on Netlify](https://flourishing-kulfi-9810c3.netlify.app/leads)
+
+---
+
+## 🎥 Demo
+
+Here’s a quick demo of the project in action:
+
+![Project Demo](./assets/demo.gif)
+
+---
+
 ---
 
 ## ⚙️ Features
