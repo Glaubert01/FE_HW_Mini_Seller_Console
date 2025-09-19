@@ -14,15 +14,12 @@ import LeadDetailPanel from "@/features/leads/components/LeadDetailPanel";
 
 import type { LeadsSortKey } from "@/features/leads/hooks/useLeads";
 import useLeads from "@/features/leads/hooks/useLeads";
+import useOpportunities from "@/features/leads/hooks/useOpportunities";
 import type { Lead, LeadStatus, LeadSource } from "@/features/leads/types";
 import {
   getLeadStatusColor,
   getLeadStatusLabel,
 } from "@/features/leads/constants";
-
-// 🔹 importar opportunities
-import useOpportunities from "@/features/leads/hooks/useOpportunities";
-import type { OpportunityInput } from "@/features/leads/opportunities/types";
 
 // filter options
 const STATUS_OPTIONS: Array<{ value: LeadStatus | "all"; label: string }> = [
@@ -49,22 +46,22 @@ export default function LeadsPage() {
     loading,
     error,
 
-    // filtros
+    // filters
     setQuery,
     setStatus,
     setSource,
 
-    // ordenação
+    // ordering
     sortKey,
     sortDir,
     toggleSort,
 
-    // ações
+    // actions
     updateLead,
     reload,
   } = useLeads({ initialSortKey: "score", initialSortDir: "desc" });
 
-  // 🔹 opportunities
+  // opportunity hook (to create in conversion)
   const { add: addOpp } = useOpportunities();
 
   const [q, setQ] = useState("");
@@ -72,7 +69,7 @@ export default function LeadsPage() {
 
   function onSearchChange(v: string) {
     setQ(v);
-    setQuery(v); // o hook já faz debounce
+    setQuery(v); // the hook already debounces
   }
 
   const columns: Column<Lead>[] = useMemo(
@@ -112,7 +109,7 @@ export default function LeadsPage() {
         </Button>
       </div>
 
-      {/* Filtros */}
+      {/* Filters */}
       <div className="grid gap-3 sm:grid-cols-3">
         <Input
           value={q}
@@ -140,7 +137,7 @@ export default function LeadsPage() {
       {loading && <Loading />}
       {error && <ErrorState message={error} onRetry={reload} />}
 
-      {/* Lista */}
+      {/* List */}
       {!loading && !error && (
         <>
           <p className="text-sm text-gray-600">
@@ -168,7 +165,7 @@ export default function LeadsPage() {
         </>
       )}
 
-      {/* Painel de detalhes */}
+      {/* Details panel + conversion */}
       <LeadDetailPanel
         open={!!selected}
         lead={selected}
@@ -178,13 +175,16 @@ export default function LeadsPage() {
           setSelected(null);
         }}
         onConvert={async (lead) => {
-          const payload: OpportunityInput = {
+          // creates the basic Opportunity from the lead
+          await addOpp({
             name: lead.name,
             company: lead.company,
+            email: lead.email,
+            value: lead.score ?? 0, // optional – just to have something
             stage: "prospecting",
-            value: Math.max(lead.score * 100, 0),
-          };
-          await addOpp(payload);
+            notes: "Converted from lead",
+            leadId: lead.id,
+          });
           setSelected(null);
         }}
       />

@@ -35,7 +35,8 @@ function seedIfEmpty() {
     save(seeded);
   }
 }
-seedIfEmpty();
+const ENABLE_SEED = false; // change to true if you want popular
+if (ENABLE_SEED) seedIfEmpty();
 
 // ----------------- API -----------------
 
