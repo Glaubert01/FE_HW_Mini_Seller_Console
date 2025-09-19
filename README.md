@@ -65,7 +65,7 @@ public/data/           # Seed data (leads.json)
 
 Here’s a quick demo of the project in action:
 
-![Project Demo](./assets/demo.gif)
+![Project Demo](./public/assets/demo.gif)
 
 ---
 
