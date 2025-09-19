@@ -2,6 +2,7 @@
 
 A **mini web CRM** built with **React + TypeScript + TailwindCSS.**
 Allows you to manage **Leads** and **Opportunities** easily, with a basic conversion flow and local persistence.
+<p><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" height="40" alt="React"/> <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" height="40" alt="TypeScript"/><img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" height="40" alt="Tailwind CSS"/></p>
 
 ---
 
