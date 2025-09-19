@@ -22,7 +22,7 @@ export default function OpportunitiesPage() {
     error,
     sortKey,
     sortDir,
-    // ⬇️ usar setters para acompanhar o onSort(key, nextDir)
+    // ⬇️ use setters to track onSort(key, nextDir)
     setSortKey,
     setSortDir,
     toggleSort,
@@ -99,7 +99,7 @@ export default function OpportunitiesPage() {
               rowKey={(row) => row.id}
               sortKey={sortKey}
               sortDir={sortDir}
-              // ✅ usa a direção calculada pelo Table
+              // ✅ uses the direction calculated by Table
               onSort={(key, nextDir) => {
                 setSortKey(key as OppsSortKey);
                 setSortDir(nextDir);

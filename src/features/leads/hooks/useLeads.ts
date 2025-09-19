@@ -35,14 +35,14 @@ type UseLeadsOptions = {
   initialSortDir?: SortDir;
 };
 
-// ---- Persistência ----------------------------------------------------------
+// ---- Persistence ----------------------------------------------------------
 const PREFS_KEY = "leads:prefs:v1";
 type Prefs = { filters: Filters; sortKey: LeadsSortKey; sortDir: SortDir };
 const DEFAULT_FILTERS: Filters = { query: "", status: "all", source: "all" };
 // ---------------------------------------------------------------------------
 
 export function useLeads(opts: UseLeadsOptions = {}) {
-  // carrega preferências salvas (se houver)
+  // loads saved preferences (if any)
   const saved = storageGet<Prefs | null>(PREFS_KEY, null);
 
   const [raw, setRaw] = useState<Lead[]>([]);
@@ -79,7 +79,7 @@ export function useLeads(opts: UseLeadsOptions = {}) {
     load();
   }, [load]);
 
-  // ---- salvar preferências -------------------------------------------------
+  // ---- save preferences -------------------------------------------------
   useEffect(() => {
     const prefs: Prefs = { filters, sortKey, sortDir };
     storageSet(PREFS_KEY, prefs);
@@ -107,7 +107,7 @@ export function useLeads(opts: UseLeadsOptions = {}) {
       setSortDir(explicitDir);
       return;
     }
-    // fallback: alterna internamente
+    // fallback: alternates internally
     setSortKey((prevKey) => {
       if (prevKey !== key) {
         setSortDir("asc");
@@ -135,7 +135,7 @@ export function useLeads(opts: UseLeadsOptions = {}) {
       return matchQuery && matchStatus && matchSource;
     });
 
-    // ordenar
+    // sort
     const keyGetter = (x: Lead) => {
       switch (sortKey) {
         case "score":
@@ -162,7 +162,7 @@ export function useLeads(opts: UseLeadsOptions = {}) {
   const updating = useRef<Set<string>>(new Set());
 
   async function updateLead(id: string, patch: LeadUpdate) {
-    // validação rápida de e-mail quando presente
+    // quick email validation when present
     if (
       patch.email !== undefined &&
       patch.email !== "" &&
@@ -178,7 +178,7 @@ export function useLeads(opts: UseLeadsOptions = {}) {
     try {
       await apiUpdateLead(id, patch);
     } catch (e) {
-      // rollback on error: recarrega tudo
+      // rollback on error: reload everything
       console.error(e);
       await load();
       throw e;
@@ -202,11 +202,11 @@ export function useLeads(opts: UseLeadsOptions = {}) {
     setStatus,
     setSource,
 
-    // sort (controlado)
+    // sort (controlled)
     sortKey,
     sortDir,
-    toggleSort, // <- use na Table: onSort={(key, dir) => toggleSort(key as LeadsSortKey, dir)}
-    setSortKey, // opcionais, caso queira controlar manualmente
+    toggleSort, // <- use on Table: onSort={(key, dir) => toggleSort(key as LeadsSortKey, dir)}
+    setSortKey, // optional, if you want to control manually
     setSortDir,
 
     // actions

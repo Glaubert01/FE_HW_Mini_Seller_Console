@@ -21,7 +21,7 @@ import {
   getLeadStatusLabel,
 } from "@/features/leads/constants";
 
-// 👇 importa a listagem para checar duplicatas no localStorage
+// 👇 import the list to check for duplicates in localStorage
 import { listOpportunities } from "@/features/leads/opportunities/api/opportunities.api";
 
 // filter options
@@ -189,7 +189,7 @@ export default function LeadsPage() {
           );
 
           if (isDuplicate) {
-            // 👇 em vez de alert, lança erro para o SlideOver exibir
+            // 👇 instead of alert, throw error for SlideOver to display
             const err: any = new Error(
               "This opportunity already exists. Please select another one."
             );

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
-import Footer from "@/components/ui/Footer"; // 👈 novo
+import Footer from "@/components/ui/Footer";
 
 interface AppLayoutProps {
   children: React.ReactNode;
