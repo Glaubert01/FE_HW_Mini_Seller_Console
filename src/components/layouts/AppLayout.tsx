@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
+import Footer from "@/components/ui/Footer"; // 👈 novo
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -21,7 +22,6 @@ function AppLayout({ children }: AppLayoutProps) {
 
   React.useEffect(() => {
     const root = document.documentElement;
-    // transição suave
     root.classList.add("theme-transition");
     const t = setTimeout(() => root.classList.remove("theme-transition"), 300);
 
@@ -41,7 +41,6 @@ function AppLayout({ children }: AppLayoutProps) {
       <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            {/* Logo: alterna automaticamente com a classe dark */}
             <img
               src="/assets/logo_lightmode.svg"
               alt="Mini Seller"
@@ -72,7 +71,6 @@ function AppLayout({ children }: AppLayoutProps) {
               </NavLink>
             ))}
 
-            {/* Toggle de tema: ícone “correto” (mostra o modo ATUAL) */}
             <button
               type="button"
               onClick={() => setIsDark((v) => !v)}
@@ -82,7 +80,6 @@ function AppLayout({ children }: AppLayoutProps) {
               }
               title={isDark ? "Light mode" : "Dark mode"}
             >
-              {/* quando está dark, mostra o ☀️; quando está light, mostra 🌙 */}
               <span className="text-base">{isDark ? "☀️" : "🌙"}</span>
             </button>
           </nav>
@@ -91,6 +88,9 @@ function AppLayout({ children }: AppLayoutProps) {
 
       {/* Main content */}
       <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
+
+      {/* Footer visível em todas as páginas */}
+      <Footer />
     </div>
   );
 }
