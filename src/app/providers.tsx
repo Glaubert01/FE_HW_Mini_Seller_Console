@@ -5,7 +5,7 @@ interface ProvidersProps {
 }
 
 export function Providers({ children }: ProvidersProps) {
-  // Aqui no futuro você pode incluir providers globais
+  // Here in the future you can include global providers
   // ex: React Query, Context API, ThemeProvider, etc.
   return <>{children}</>;
 }

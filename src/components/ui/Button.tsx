@@ -100,7 +100,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       className={classes}
       disabled={disabled || busy}
       {...props}
-      aria-busy={busy ? "true" : undefined} // <- aqui o ajuste
+      aria-busy={busy ? "true" : undefined}
     >
       {busy ? (
         <>

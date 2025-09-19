@@ -89,7 +89,7 @@ function AppLayout({ children }: AppLayoutProps) {
       {/* Main content */}
       <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
 
-      {/* Footer visível em todas as páginas */}
+      {/* Footer visible on all pages */}
       <Footer />
     </div>
   );
