@@ -32,7 +32,9 @@ export default function SlideOver({
       {/* Overlay */}
       <div
         className={clsx(
-          "fixed inset-0 bg-gray-900/50 transition-opacity",
+          "fixed inset-0 transition-opacity",
+          // backdrop mais forte no dark mode
+          "bg-gray-900/50 dark:bg-black/60",
           open ? "opacity-100" : "opacity-0"
         )}
         onClick={onClose}
@@ -42,17 +44,19 @@ export default function SlideOver({
       {/* Panel */}
       <div
         className={clsx(
-          "relative ml-auto flex h-full w-full max-w-md transform flex-col bg-white shadow-xl transition-all",
+          "relative ml-auto flex h-full w-full max-w-md transform flex-col shadow-xl transition-all",
+          // fundo com suporte a dark + transição de cor suave
+          "bg-white dark:bg-gray-900 transition-colors",
           open ? "translate-x-0" : "translate-x-full",
           className
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b px-4 py-3 sm:px-6">
+        <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 px-4 py-3 sm:px-6">
           {title && (
             <h2
               id="slide-over-title"
-              className="text-lg font-medium text-gray-900"
+              className="text-lg font-medium text-gray-900 dark:text-gray-100 transition-colors"
             >
               {title}
             </h2>
@@ -60,7 +64,7 @@ export default function SlideOver({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:text-gray-300 dark:hover:text-gray-100 transition-colors"
           >
             <span className="sr-only">Close panel</span>
             <XMarkIcon className="h-6 w-6" aria-hidden="true" />
@@ -68,13 +72,15 @@ export default function SlideOver({
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+        <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 text-gray-900 dark:text-gray-100 transition-colors">
           {children}
         </div>
 
         {/* Footer */}
         {footer && (
-          <div className="border-t px-4 py-4 sm:px-6 bg-gray-50">{footer}</div>
+          <div className="border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 px-4 py-4 sm:px-6 transition-colors">
+            {footer}
+          </div>
         )}
       </div>
     </div>

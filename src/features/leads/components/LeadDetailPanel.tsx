@@ -17,7 +17,7 @@ type Props = {
   lead: Lead | null;
   onClose: () => void;
   onSave: (id: string, patch: LeadUpdate) => Promise<void> | void;
-  /** novo: disparado para converter o lead em opportunity */
+  /** chamado para converter o lead em opportunity */
   onConvert?: (lead: Lead) => Promise<void> | void;
 };
 
@@ -42,6 +42,7 @@ export default function LeadDetailPanel({
   const [converting, setConverting] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
+  // reset quando abrir/trocar lead
   React.useEffect(() => {
     setEmail(initial.email);
     setStatus(initial.status);
@@ -86,13 +87,27 @@ export default function LeadDetailPanel({
     label: s.label,
   }));
 
+  const busy = saving || converting;
+
   return (
-    <SlideOver open={open} title={lead ? lead.name : ""} onClose={onClose}>
+    <SlideOver
+      open={open}
+      title={lead ? lead.name : ""}
+      onClose={busy ? () => {} : onClose}
+    >
       {!lead ? null : (
-        <div className="flex flex-col gap-6">
+        <div
+          className="flex flex-col gap-6"
+          aria-busy={busy || undefined}
+          aria-live="polite"
+        >
           <section className="space-y-2">
-            <div className="text-sm text-gray-500">Company</div>
-            <div className="text-gray-900">{lead.company || "—"}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              Company
+            </div>
+            <div className="text-gray-900 dark:text-gray-100">
+              {lead.company || "—"}
+            </div>
           </section>
 
           <section className="grid gap-4">
@@ -111,13 +126,17 @@ export default function LeadDetailPanel({
             />
 
             <div className="flex items-center gap-2">
-              <div className="text-sm text-gray-500">Current status:</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
+                Current status:
+              </div>
               <Badge color={getLeadStatusColor(lead.status)}>
                 {getLeadStatusLabel(lead.status)}
               </Badge>
             </div>
 
-            {err && <p className="text-sm text-red-600">{err}</p>}
+            {err && (
+              <p className="text-sm text-red-600 dark:text-red-400">{err}</p>
+            )}
           </section>
 
           <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
@@ -125,8 +144,10 @@ export default function LeadDetailPanel({
               <Button
                 variant="secondary"
                 onClick={handleConvert}
-                loading={converting}
+                isLoading={converting}
                 loadingLabel="Converting…"
+                disabled={busy}
+                aria-label="Convert lead into an opportunity"
               >
                 Convert Lead
               </Button>
@@ -134,16 +155,19 @@ export default function LeadDetailPanel({
 
             <div className="ml-auto flex items-center gap-2">
               <Button
-                variant="ghost"
+                variant="secondary"
                 onClick={onClose}
-                disabled={saving || converting}
+                disabled={busy}
+                aria-label="Cancel and close panel"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleSave}
-                loading={saving}
+                isLoading={saving}
                 loadingLabel="Saving…"
+                disabled={busy}
+                aria-label="Save changes"
               >
                 Save changes
               </Button>

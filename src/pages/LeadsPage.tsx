@@ -61,7 +61,7 @@ export default function LeadsPage() {
     reload,
   } = useLeads({ initialSortKey: "score", initialSortDir: "desc" });
 
-  // opportunity hook (to create in conversion)
+  // to create an opportunity when converting
   const { add: addOpp } = useOpportunities();
 
   const [q, setQ] = useState("");
@@ -69,7 +69,7 @@ export default function LeadsPage() {
 
   function onSearchChange(v: string) {
     setQ(v);
-    setQuery(v); // the hook already debounces
+    setQuery(v); // debounced inside the hook
   }
 
   const columns: Column<Lead>[] = useMemo(
@@ -140,7 +140,7 @@ export default function LeadsPage() {
       {/* List */}
       {!loading && !error && (
         <>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             <strong>{total}</strong> result(s)
           </p>
 
@@ -175,12 +175,12 @@ export default function LeadsPage() {
           setSelected(null);
         }}
         onConvert={async (lead) => {
-          // creates the basic Opportunity from the lead
+          // basic opportunity from lead
           await addOpp({
             name: lead.name,
             company: lead.company,
             email: lead.email,
-            value: lead.score ?? 0, // optional – just to have something
+            value: lead.score ?? 0, // optional
             stage: "prospecting",
             notes: "Converted from lead",
             leadId: lead.id,

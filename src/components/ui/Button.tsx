@@ -20,9 +20,18 @@ const base =
   "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400 disabled:opacity-60 disabled:cursor-not-allowed";
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-brand-500 text-white hover:bg-brand-600",
-  secondary: "bg-white text-gray-800 border border-gray-300 hover:bg-gray-50",
-  ghost: "bg-transparent text-gray-700 hover:bg-gray-100",
+  primary:
+    "bg-brand-500 text-white hover:bg-brand-600 focus:ring-brand-400 " +
+    "dark:bg-brand-500 dark:hover:bg-brand-400",
+
+  secondary:
+    "bg-white text-gray-800 border border-gray-300 hover:bg-gray-50 " +
+    "focus:ring-brand-400 " +
+    "dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 dark:hover:bg-gray-700",
+
+  ghost:
+    "bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-brand-400 " +
+    "dark:text-gray-300 dark:hover:bg-gray-800",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

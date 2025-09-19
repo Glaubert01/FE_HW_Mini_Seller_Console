@@ -11,42 +11,86 @@ const navItems = [
 ];
 
 function AppLayout({ children }: AppLayoutProps) {
+  const [isDark, setIsDark] = React.useState(
+    () =>
+      (localStorage.getItem("theme") ??
+        (window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light")) === "dark"
+  );
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    // transição suave
+    root.classList.add("theme-transition");
+    const t = setTimeout(() => root.classList.remove("theme-transition"), 300);
+
+    if (isDark) {
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+    return () => clearTimeout(t);
+  }, [isDark]);
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
       {/* Header */}
-      <header className="bg-white border-b shadow-sm">
+      <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Logo + Title */}
           <Link to="/" className="flex items-center gap-2">
+            {/* Logo: alterna automaticamente com a classe dark */}
             <img
-              src="../../../public/assets/logo_lightmode.svg"
-              alt="Mini Seller Console"
-              className="h-16 w-auto"
+              src="/assets/logo_lightmode.svg"
+              alt="Mini Seller"
+              className="h-16 w-auto dark:hidden"
             />
+            <img
+              src="/assets/logo_darkmode.svg"
+              alt="Mini Seller"
+              className="h-16 w-auto hidden dark:block"
+            />
+            <span className="sr-only">Mini Seller Console</span>
           </Link>
-          {/* Navigation */}
-          <nav className="flex gap-4 sm:gap-6">
+
+          <nav className="flex items-center gap-4 sm:gap-6">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) =>
                   `text-sm font-medium transition-colors hover:text-brand-600 ${
-                    isActive ? "text-brand-500" : "text-gray-600"
+                    isActive
+                      ? "text-brand-600"
+                      : "text-gray-600 dark:text-gray-300"
                   }`
                 }
               >
                 {item.label}
               </NavLink>
             ))}
+
+            {/* Toggle de tema: ícone “correto” (mostra o modo ATUAL) */}
+            <button
+              type="button"
+              onClick={() => setIsDark((v) => !v)}
+              className="h-9 w-9 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-400"
+              aria-label={
+                isDark ? "Switch to light mode" : "Switch to dark mode"
+              }
+              title={isDark ? "Light mode" : "Dark mode"}
+            >
+              {/* quando está dark, mostra o ☀️; quando está light, mostra 🌙 */}
+              <span className="text-base">{isDark ? "☀️" : "🌙"}</span>
+            </button>
           </nav>
         </div>
       </header>
 
       {/* Main content */}
-      <main className="flex-1 bg-gray-50 p-4 sm:p-6 lg:p-8 overflow-x-auto">
-        {children}
-      </main>
+      <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
     </div>
   );
 }
