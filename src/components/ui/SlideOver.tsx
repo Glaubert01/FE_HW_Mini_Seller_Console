@@ -33,7 +33,7 @@ export default function SlideOver({
       <div
         className={clsx(
           "fixed inset-0 transition-opacity",
-          // backdrop mais forte no dark mode
+          // stronger backdrop in dark mode
           "bg-gray-900/50 dark:bg-black/60",
           open ? "opacity-100" : "opacity-0"
         )}
@@ -45,7 +45,7 @@ export default function SlideOver({
       <div
         className={clsx(
           "relative ml-auto flex h-full w-full max-w-md transform flex-col shadow-xl transition-all",
-          // fundo com suporte a dark + transição de cor suave
+          // background with dark support + smooth color transition
           "bg-white dark:bg-gray-900 transition-colors",
           open ? "translate-x-0" : "translate-x-full",
           className

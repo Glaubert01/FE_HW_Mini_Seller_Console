@@ -175,7 +175,6 @@ export default function Table<T>({
                         "px-4 py-3 text-gray-800 dark:text-gray-100",
                         align,
                         col.className,
-                        // força branco na coluna ID em dark mode, mesmo que a coluna defina outra cor
                         String(col.key) === "id" ? "dark:!text-white" : "",
                       ]
                         .filter(Boolean)

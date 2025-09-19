@@ -17,7 +17,7 @@ type Props = {
   lead: Lead | null;
   onClose: () => void;
   onSave: (id: string, patch: LeadUpdate) => Promise<void> | void;
-  /** chamado para converter o lead em opportunity */
+  /** called to convert the lead into an opportunity */
   onConvert?: (lead: Lead) => Promise<void> | void;
 };
 
@@ -42,7 +42,7 @@ export default function LeadDetailPanel({
   const [converting, setConverting] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  // reset quando abrir/trocar lead
+  // reset when opening/changing lead
   React.useEffect(() => {
     setEmail(initial.email);
     setStatus(initial.status);
@@ -70,14 +70,14 @@ export default function LeadDetailPanel({
 
   async function handleConvert() {
     if (!lead || !onConvert) return;
-    setErr(null); // << exibe apenas a nova mensagem do fluxo atual
+    setErr(null); // << display only the new message from the current stream
     setConverting(true);
     try {
       await onConvert(lead);
       onClose();
     } catch (e: any) {
       console.error(e);
-      // << usa a mensagem enviada pelo LeadsPage (ex.: duplicado) ou fallback
+      // << uses the message sent by LeadsPage (e.g. duplicate) or fallback
       setErr(e?.message || "Could not convert lead.");
     } finally {
       setConverting(false);
