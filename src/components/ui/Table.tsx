@@ -7,7 +7,7 @@ export type Column<T> = {
   header: string;
   className?: string;
   render?: (row: T, index: number) => React.ReactNode;
-  sortable?: boolean;
+  sortable?: boolean; // default: true
   align?: "left" | "center" | "right";
   /** Ex.: "120px" | "20%" */
   width?: string | number;
@@ -18,9 +18,13 @@ export type TableProps<T> = {
   columns: Column<T>[];
   rowKey: (row: T, index: number) => string;
   onRowClick?: (row: T) => void;
+
   sortKey?: string;
   sortDir?: SortDir;
-  onSort?: (key: string) => void;
+
+  /** Agora recebemos também o PRÓXIMO dir calculado pelo header */
+  onSort?: (key: string, nextDir: SortDir) => void;
+
   className?: string;
   bordered?: boolean;
 };
@@ -77,47 +81,50 @@ export default function Table<T>({
                   : col.align === "right"
                   ? "text-right"
                   : "text-left";
-              const active = String(col.key) === String(sortKey);
-              const sortable = !!col.sortable && !!onSort;
 
-              const common = "px-4 py-3 font-semibold";
-              const classes = [common, align, col.className]
+              const isActive = String(col.key) === String(sortKey);
+              const isSortable = (col.sortable ?? true) && !!onSort;
+
+              const base = "px-4 py-3 font-semibold";
+              const classes = [base, align, col.className]
                 .filter(Boolean)
                 .join(" ");
 
-              if (!sortable) {
+              if (!isSortable) {
                 return (
-                  <th
-                    key={String(col.key)}
-                    scope="col"
-                    role="columnheader"
-                    className={classes}
-                  >
+                  <th key={String(col.key)} scope="col" className={classes}>
                     {col.header}
                   </th>
                 );
               }
 
+              // calcula o PRÓXIMO dir antes de chamar o onSort
+              const nextDir: SortDir = isActive
+                ? sortDir === "asc"
+                  ? "desc"
+                  : "asc"
+                : "asc";
+
               return (
                 <th
                   key={String(col.key)}
                   scope="col"
-                  role="columnheader"
                   className={classes}
-                  {...(active
+                  {...(isActive
                     ? {
                         "aria-sort":
                           sortDir === "asc" ? "ascending" : "descending",
                       }
-                    : {})}
+                    : { "aria-sort": "none" })}
                 >
                   <button
                     type="button"
-                    onClick={() => onSort?.(String(col.key))}
+                    onClick={() => onSort?.(String(col.key), nextDir)}
                     className="inline-flex items-center gap-1 hover:text-brand-600 focus:outline-none focus:underline"
+                    aria-label={`Sort by ${col.header}`}
                   >
                     <span>{col.header}</span>
-                    <SortIcon active={active} dir={sortDir} />
+                    <SortIcon active={isActive} dir={sortDir} />
                   </button>
                 </th>
               );
