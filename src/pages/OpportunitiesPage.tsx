@@ -8,7 +8,9 @@ import Loading from "@/components/feedback/Loading";
 import ErrorState from "@/components/feedback/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
 
-import { useOpportunities } from "@/features/leads/hooks/useOpportunities";
+import useOpportunities, {
+  type OppsSortKey,
+} from "@/features/leads/hooks/useOpportunities";
 import type { Opportunity } from "@/features/leads/opportunities/types";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -79,10 +81,10 @@ export default function OpportunitiesPage() {
             <Table
               columns={columns}
               data={opportunities}
-              rowKey={(row) => row.id} /* <- function, not string */
+              rowKey={(row) => row.id}
               sortKey={sortKey}
               sortDir={sortDir}
-              onSort={(key) => toggleSort(key as any)}
+              onSort={(key, nextDir) => toggleSort(key as OppsSortKey, nextDir)}
             />
           )}
         </>

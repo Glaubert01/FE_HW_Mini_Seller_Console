@@ -16,6 +16,7 @@ import { isEmail } from "@/lib/email";
 export type LeadsSortKey =
   | "score"
   | "name"
+  | "email"
   | "company"
   | "createdAt"
   | "status";
@@ -85,8 +86,14 @@ export function useLeads(opts: UseLeadsOptions = {}) {
   const setSource = (s: Filters["source"]) =>
     setFilters((prev) => ({ ...prev, source: s }));
 
-  // ---- sorting -------------------------------------------------------------
-  const toggleSort = (key: LeadsSortKey) => {
+  // ---- sorting (aceita próximo dir opcional) ------------------------------
+  const toggleSort = useCallback((key: LeadsSortKey, explicitDir?: SortDir) => {
+    if (explicitDir) {
+      setSortKey(key);
+      setSortDir(explicitDir);
+      return;
+    }
+    // fallback: alterna internamente
     setSortKey((prevKey) => {
       if (prevKey !== key) {
         setSortDir("asc");
@@ -95,11 +102,12 @@ export function useLeads(opts: UseLeadsOptions = {}) {
       setSortDir((prev) => (prev === "asc" ? "desc" : "asc"));
       return prevKey;
     });
-  };
+  }, []);
 
   // ---- derived list --------------------------------------------------------
   const list = useMemo(() => {
     const q = filters.query.trim().toLowerCase();
+
     const filtered = raw.filter((l) => {
       const matchQuery =
         !q ||
@@ -120,6 +128,8 @@ export function useLeads(opts: UseLeadsOptions = {}) {
           return x.score;
         case "name":
           return x.name;
+        case "email":
+          return x.email;
         case "company":
           return x.company;
         case "createdAt":
@@ -154,7 +164,7 @@ export function useLeads(opts: UseLeadsOptions = {}) {
     try {
       await apiUpdateLead(id, patch);
     } catch (e) {
-      // rollback on error: reload everything
+      // rollback on error: recarrega tudo
       console.error(e);
       await load();
       throw e;
@@ -178,12 +188,12 @@ export function useLeads(opts: UseLeadsOptions = {}) {
     setStatus,
     setSource,
 
-    // sort
+    // sort (controlado)
     sortKey,
     sortDir,
-    setSortKey,
+    toggleSort, // <- use na Table: onSort={(key, dir) => toggleSort(key as LeadsSortKey, dir)}
+    setSortKey, // opcionais, caso queira controlar manualmente
     setSortDir,
-    toggleSort,
 
     // actions
     reload: load,

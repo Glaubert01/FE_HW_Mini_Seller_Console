@@ -10,6 +10,7 @@ import Loading from "@/components/feedback/Loading";
 import ErrorState from "@/components/feedback/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
 
+import type { LeadsSortKey } from "@/features/leads/hooks/useLeads";
 import useLeads from "@/features/leads/hooks/useLeads";
 import type { Lead, LeadStatus, LeadSource } from "@/features/leads/types";
 import {
@@ -137,10 +138,12 @@ export default function LeadsPage() {
             <Table
               columns={columns}
               data={leads}
-              rowKey={(row) => row.id} // <- function, not string literal
+              rowKey={(row) => row.id}
               sortKey={sortKey}
               sortDir={sortDir}
-              onSort={(key) => toggleSort(key as any)}
+              onSort={(key, nextDir) =>
+                toggleSort(key as LeadsSortKey, nextDir)
+              }
             />
           )}
         </>

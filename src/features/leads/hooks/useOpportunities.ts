@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   Opportunity,
   OpportunityInput,
-  Stage,
 } from "@/features/leads/opportunities/types";
 import {
   listOpportunities,
@@ -41,8 +40,14 @@ export function useOpportunities() {
     load();
   }, [load]);
 
-  // sorting
-  const toggleSort = (key: OppsSortKey) => {
+  /** Sorting: aceita o próximo dir calculado pela Table */
+  const toggleSort = useCallback((key: OppsSortKey, explicitDir?: SortDir) => {
+    if (explicitDir) {
+      setSortKey(key);
+      setSortDir(explicitDir);
+      return;
+    }
+    // fallback: alterna internamente
     setSortKey((prev) => {
       if (prev !== key) {
         setSortDir("asc");
@@ -51,7 +56,7 @@ export function useOpportunities() {
       setSortDir((d) => (d === "asc" ? "desc" : "asc"));
       return prev;
     });
-  };
+  }, []);
 
   const list = useMemo(() => {
     const getter = (o: Opportunity) => {
@@ -117,11 +122,17 @@ export function useOpportunities() {
     total: list.length,
     loading,
     error,
+
+    // sorting state
     sortKey,
     sortDir,
-    setSortKey,
-    setSortDir,
+
+    // API p/ a Table (e para uso manual)
     toggleSort,
+    setSortKey, // opcionais (mantidos caso queira controlar fora)
+    setSortDir,
+
+    // data ops
     reload: load,
     add,
     patch,
