@@ -28,7 +28,7 @@ export default function OpportunitiesPage() {
 
   const columns: Column<Opportunity>[] = useMemo(
     () => [
-      // Mostra o leadId (quando existir) ou o id da opportunity
+      // Shows the leadId (when available) or the opportunity ID
       {
         key: "id",
         header: "ID",

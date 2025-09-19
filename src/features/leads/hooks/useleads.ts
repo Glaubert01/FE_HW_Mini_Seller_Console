@@ -12,6 +12,7 @@ import {
 import { debounce } from "@/lib/utils";
 import { sortByKey } from "@/lib/sort";
 import { isEmail } from "@/lib/email";
+import { storageGet, storageSet } from "@/lib/storage";
 
 export type LeadsSortKey =
   | "score"
@@ -34,22 +35,29 @@ type UseLeadsOptions = {
   initialSortDir?: SortDir;
 };
 
+// ---- Persistência ----------------------------------------------------------
+const PREFS_KEY = "leads:prefs:v1";
+type Prefs = { filters: Filters; sortKey: LeadsSortKey; sortDir: SortDir };
+const DEFAULT_FILTERS: Filters = { query: "", status: "all", source: "all" };
+// ---------------------------------------------------------------------------
+
 export function useLeads(opts: UseLeadsOptions = {}) {
+  // carrega preferências salvas (se houver)
+  const saved = storageGet<Prefs | null>(PREFS_KEY, null);
+
   const [raw, setRaw] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [filters, setFilters] = useState<Filters>({
-    query: "",
-    status: "all",
-    source: "all",
-  });
+  const [filters, setFilters] = useState<Filters>(
+    saved?.filters ?? DEFAULT_FILTERS
+  );
 
   const [sortKey, setSortKey] = useState<LeadsSortKey>(
-    opts.initialSortKey ?? "score"
+    saved?.sortKey ?? opts.initialSortKey ?? "score"
   );
   const [sortDir, setSortDir] = useState<SortDir>(
-    opts.initialSortDir ?? "desc"
+    saved?.sortDir ?? opts.initialSortDir ?? "desc"
   );
 
   // ---- load ---------------------------------------------------------------
@@ -70,6 +78,12 @@ export function useLeads(opts: UseLeadsOptions = {}) {
   useEffect(() => {
     load();
   }, [load]);
+
+  // ---- salvar preferências -------------------------------------------------
+  useEffect(() => {
+    const prefs: Prefs = { filters, sortKey, sortDir };
+    storageSet(PREFS_KEY, prefs);
+  }, [filters, sortKey, sortDir]);
 
   // ---- search (debounced setter) ------------------------------------------
   const setQuery = useMemo(
