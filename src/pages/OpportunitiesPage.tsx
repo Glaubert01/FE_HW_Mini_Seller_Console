@@ -1,9 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-import Table from "@/components/ui/Table";
-import Badge from "@/components/ui/Badge";
-
+import Table, { type Column } from "@/components/ui/Table";
 import Loading from "@/components/feedback/Loading";
 import ErrorState from "@/components/feedback/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
@@ -29,30 +26,47 @@ export default function OpportunitiesPage() {
     reload,
   } = useOpportunities();
 
-  const columns = useMemo(
+  const columns: Column<Opportunity>[] = useMemo(
     () => [
-      { key: "name", header: "Name", width: 220 },
-      { key: "company", header: "Company", width: 220 },
+      // Mostra o leadId (quando existir) ou o id da opportunity
+      {
+        key: "id",
+        header: "ID",
+        width: 220,
+        sortable: false,
+        render: (o) => (
+          <span
+            className="font-mono text-xs text-gray-800"
+            title={(o.leadId ?? o.id) || ""}
+          >
+            {o.leadId ?? o.id}
+          </span>
+        ),
+      },
+      { key: "name", header: "Name", width: 220, sortable: true },
+      { key: "company", header: "Account", width: 220, sortable: true },
       {
         key: "value",
-        header: "Value",
+        header: "Amount",
         width: 120,
-        align: "right" as const,
-        render: (o: Opportunity) => currency.format(o.value ?? 0),
+        align: "right",
+        sortable: true,
+        render: (o) => currency.format(o.value ?? 0),
       },
-      { key: "stage", header: "Stage", width: 140 },
+      { key: "stage", header: "Stage", width: 140, sortable: true },
       {
         key: "createdAt",
         header: "Created",
         width: 160,
-        render: (o: Opportunity) => new Date(o.createdAt).toLocaleDateString(),
+        sortable: true,
+        render: (o) => new Date(o.createdAt).toLocaleDateString(),
       },
     ],
     []
   );
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="space-y-4 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Opportunities</h1>
@@ -65,11 +79,9 @@ export default function OpportunitiesPage() {
         </Button>
       </div>
 
-      {/* Estados */}
       {loading && <Loading />}
       {error && <ErrorState message={error} onRetry={reload} />}
 
-      {/* Lista */}
       {!loading && !error && (
         <>
           {opportunities.length === 0 ? (

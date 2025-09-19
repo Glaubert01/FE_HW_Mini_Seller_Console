@@ -20,6 +20,10 @@ import {
   getLeadStatusLabel,
 } from "@/features/leads/constants";
 
+// 🔹 importar opportunities
+import useOpportunities from "@/features/leads/hooks/useOpportunities";
+import type { OpportunityInput } from "@/features/leads/opportunities/types";
+
 // filter options
 const STATUS_OPTIONS: Array<{ value: LeadStatus | "all"; label: string }> = [
   { value: "all", label: "All statuses" },
@@ -59,6 +63,9 @@ export default function LeadsPage() {
     updateLead,
     reload,
   } = useLeads({ initialSortKey: "score", initialSortDir: "desc" });
+
+  // 🔹 opportunities
+  const { add: addOpp } = useOpportunities();
 
   const [q, setQ] = useState("");
   const [selected, setSelected] = useState<Lead | null>(null);
@@ -168,6 +175,16 @@ export default function LeadsPage() {
         onClose={() => setSelected(null)}
         onSave={async (id, patch) => {
           await updateLead(id, patch);
+          setSelected(null);
+        }}
+        onConvert={async (lead) => {
+          const payload: OpportunityInput = {
+            name: lead.name,
+            company: lead.company,
+            stage: "prospecting",
+            value: Math.max(lead.score * 100, 0),
+          };
+          await addOpp(payload);
           setSelected(null);
         }}
       />
