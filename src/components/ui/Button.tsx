@@ -9,7 +9,11 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   fullWidth?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
+
+  // loading
   isLoading?: boolean;
+  loading?: boolean; // alias
+  loadingLabel?: React.ReactNode;
 };
 
 const base =
@@ -60,6 +64,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     leftIcon,
     rightIcon,
     isLoading,
+    loading,
+    loadingLabel,
     className = "",
     children,
     disabled,
@@ -67,6 +73,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   },
   ref
 ) {
+  const busy = Boolean(isLoading ?? loading);
+
   const classes = [
     base,
     variantClasses[variant],
@@ -81,15 +89,22 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
     <button
       ref={ref}
       className={classes}
-      disabled={disabled || isLoading}
+      disabled={disabled || busy}
       {...props}
+      aria-busy={busy ? "true" : undefined} // <- aqui o ajuste
     >
-      {isLoading && spinner}
-      {!isLoading && leftIcon ? <span className="mr-2">{leftIcon}</span> : null}
-      {children}
-      {!isLoading && rightIcon ? (
-        <span className="ml-2">{rightIcon}</span>
-      ) : null}
+      {busy ? (
+        <>
+          {spinner}
+          {loadingLabel ?? children}
+        </>
+      ) : (
+        <>
+          {leftIcon ? <span className="mr-2">{leftIcon}</span> : null}
+          {children}
+          {rightIcon ? <span className="ml-2">{rightIcon}</span> : null}
+        </>
+      )}
     </button>
   );
 });

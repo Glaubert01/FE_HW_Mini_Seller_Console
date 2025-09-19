@@ -3,12 +3,14 @@ import React, { useMemo, useState } from "react";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
-import Table from "@/components/ui/Table";
+import Table, { type Column } from "@/components/ui/Table";
 import Badge from "@/components/ui/Badge";
 
 import Loading from "@/components/feedback/Loading";
 import ErrorState from "@/components/feedback/ErrorState";
 import EmptyState from "@/components/ui/EmptyState";
+
+import LeadDetailPanel from "@/features/leads/components/LeadDetailPanel";
 
 import type { LeadsSortKey } from "@/features/leads/hooks/useLeads";
 import useLeads from "@/features/leads/hooks/useLeads";
@@ -42,44 +44,59 @@ export default function LeadsPage() {
     total,
     loading,
     error,
+
+    // filtros
     setQuery,
     setStatus,
     setSource,
+
+    // ordenação
     sortKey,
     sortDir,
     toggleSort,
+
+    // ações
+    updateLead,
     reload,
   } = useLeads({ initialSortKey: "score", initialSortDir: "desc" });
 
   const [q, setQ] = useState("");
+  const [selected, setSelected] = useState<Lead | null>(null);
 
   function onSearchChange(v: string) {
     setQ(v);
-    setQuery(v); // the hook already debounces internally
+    setQuery(v); // o hook já faz debounce
   }
 
-  const columns = useMemo(
+  const columns: Column<Lead>[] = useMemo(
     () => [
-      { key: "name", header: "Name", width: 220 },
-      { key: "email", header: "Email", width: 220 },
-      { key: "company", header: "Company", width: 200 },
+      { key: "name", header: "Name", width: 220, sortable: true },
+      { key: "email", header: "Email", width: 220, sortable: true },
+      { key: "company", header: "Company", width: 200, sortable: true },
       {
         key: "status",
         header: "Status",
         width: 140,
+        sortable: true,
         render: (l: Lead) => (
           <Badge className={getLeadStatusColor(l.status)}>
             {getLeadStatusLabel(l.status)}
           </Badge>
         ),
       },
-      { key: "score", header: "Score", width: 90, align: "right" as const },
+      {
+        key: "score",
+        header: "Score",
+        width: 90,
+        align: "right",
+        sortable: true,
+      },
     ],
     []
   );
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="space-y-4 p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold">Leads</h1>
@@ -101,28 +118,22 @@ export default function LeadsPage() {
           defaultValue="all"
           onChange={(e) => setStatus(e.target.value as any)}
           aria-label="Filter by status"
-          options={STATUS_OPTIONS.map((o) => ({
-            value: o.value,
-            label: o.label,
-          }))}
+          options={STATUS_OPTIONS}
         />
 
         <Select
           defaultValue="all"
           onChange={(e) => setSource(e.target.value as any)}
           aria-label="Filter by source"
-          options={SOURCE_OPTIONS.map((o) => ({
-            value: o.value,
-            label: o.label,
-          }))}
+          options={SOURCE_OPTIONS}
         />
       </div>
 
-      {/* Loading/Error States */}
+      {/* Loading / Error */}
       {loading && <Loading />}
       {error && <ErrorState message={error} onRetry={reload} />}
 
-      {/* List */}
+      {/* Lista */}
       {!loading && !error && (
         <>
           <p className="text-sm text-gray-600">
@@ -144,10 +155,22 @@ export default function LeadsPage() {
               onSort={(key, nextDir) =>
                 toggleSort(key as LeadsSortKey, nextDir)
               }
+              onRowClick={(row) => setSelected(row)}
             />
           )}
         </>
       )}
+
+      {/* Painel de detalhes */}
+      <LeadDetailPanel
+        open={!!selected}
+        lead={selected}
+        onClose={() => setSelected(null)}
+        onSave={async (id, patch) => {
+          await updateLead(id, patch);
+          setSelected(null);
+        }}
+      />
     </div>
   );
 }
