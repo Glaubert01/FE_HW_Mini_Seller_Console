@@ -21,6 +21,9 @@ import {
   getLeadStatusLabel,
 } from "@/features/leads/constants";
 
+// 👇 importa a listagem para checar duplicatas no localStorage
+import { listOpportunities } from "@/features/leads/opportunities/api/opportunities.api";
+
 // filter options
 const STATUS_OPTIONS: Array<{ value: LeadStatus | "all"; label: string }> = [
   { value: "all", label: "All statuses" },
@@ -175,6 +178,25 @@ export default function LeadsPage() {
           setSelected(null);
         }}
         onConvert={async (lead) => {
+          // 🔒 prevent duplicates (same leadId OR same name+company)
+          const current = await listOpportunities();
+          const norm = (s?: string) => (s ?? "").trim().toLowerCase();
+          const isDuplicate = current.some(
+            (o) =>
+              o.leadId === lead.id ||
+              (norm(o.name) === norm(lead.name) &&
+                norm(o.company) === norm(lead.company))
+          );
+
+          if (isDuplicate) {
+            // 👇 em vez de alert, lança erro para o SlideOver exibir
+            const err: any = new Error(
+              "This opportunity already exists. Please select another one."
+            );
+            err.code = "DUPLICATE_OPPORTUNITY";
+            throw err;
+          }
+
           // basic opportunity from lead
           await addOpp({
             name: lead.name,

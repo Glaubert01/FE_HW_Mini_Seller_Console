@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   Opportunity,
   OpportunityInput,
+  Stage,
 } from "@/features/leads/opportunities/types";
 import {
   listOpportunities,
@@ -40,14 +41,8 @@ export function useOpportunities() {
     load();
   }, [load]);
 
-  /** Sorting: aceita o próximo dir calculado pela Table */
-  const toggleSort = useCallback((key: OppsSortKey, explicitDir?: SortDir) => {
-    if (explicitDir) {
-      setSortKey(key);
-      setSortDir(explicitDir);
-      return;
-    }
-    // fallback: alterna internamente
+  // sorting
+  const toggleSort = (key: OppsSortKey) => {
     setSortKey((prev) => {
       if (prev !== key) {
         setSortDir("asc");
@@ -56,7 +51,7 @@ export function useOpportunities() {
       setSortDir((d) => (d === "asc" ? "desc" : "asc"));
       return prev;
     });
-  }, []);
+  };
 
   const list = useMemo(() => {
     const getter = (o: Opportunity) => {
@@ -83,6 +78,26 @@ export function useOpportunities() {
   async function add(input: OpportunityInput) {
     creating.current = true;
     try {
+      // 🔒 DUPLICATE GUARD (reads latest from localStorage)
+      const current = await listOpportunities();
+      const norm = (s?: string) => (s ?? "").trim().toLowerCase();
+
+      const exists = current.some((o) => {
+        const sameLead = input.leadId && o.leadId === input.leadId;
+        const sameNameCompany =
+          norm(o.name) === norm(input.name) &&
+          norm(o.company) === norm(input.company);
+        return Boolean(sameLead || sameNameCompany);
+      });
+
+      if (exists) {
+        const err: any = new Error(
+          "This opportunity already exists. Please select another one."
+        );
+        err.code = "DUPLICATE_OPPORTUNITY";
+        throw err;
+      }
+
       const created = await createOpportunity(input);
       setItems((prev) => [created, ...prev]);
       return created;
@@ -122,17 +137,11 @@ export function useOpportunities() {
     total: list.length,
     loading,
     error,
-
-    // sorting state
     sortKey,
     sortDir,
-
-    // API p/ a Table (e para uso manual)
-    toggleSort,
-    setSortKey, // opcionais (mantidos caso queira controlar fora)
+    setSortKey,
     setSortDir,
-
-    // data ops
+    toggleSort,
     reload: load,
     add,
     patch,

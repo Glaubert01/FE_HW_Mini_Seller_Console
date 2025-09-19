@@ -70,13 +70,15 @@ export default function LeadDetailPanel({
 
   async function handleConvert() {
     if (!lead || !onConvert) return;
+    setErr(null); // << exibe apenas a nova mensagem do fluxo atual
     setConverting(true);
     try {
       await onConvert(lead);
       onClose();
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      setErr("Could not convert lead.");
+      // << usa a mensagem enviada pelo LeadsPage (ex.: duplicado) ou fallback
+      setErr(e?.message || "Could not convert lead.");
     } finally {
       setConverting(false);
     }
