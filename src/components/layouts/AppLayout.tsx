@@ -16,10 +16,16 @@ function AppLayout({ children }: AppLayoutProps) {
       {/* Header */}
       <header className="bg-white border-b shadow-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link to="/" className="text-lg font-bold text-brand-600">
-            Mini Seller Console
+          {/* Logo + Title */}
+          <Link to="/" className="flex items-center gap-2">
+            <img
+              src="../../../public/assets/logo_lightmode.svg"
+              alt="Mini Seller Console"
+              className="h-16 w-auto"
+            />
           </Link>
-          <nav className="flex gap-6">
+          {/* Navigation */}
+          <nav className="flex gap-4 sm:gap-6">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -38,7 +44,9 @@ function AppLayout({ children }: AppLayoutProps) {
       </header>
 
       {/* Main content */}
-      <main className="flex-1 bg-gray-50 p-4 sm:p-6 lg:p-8">{children}</main>
+      <main className="flex-1 bg-gray-50 p-4 sm:p-6 lg:p-8 overflow-x-auto">
+        {children}
+      </main>
     </div>
   );
 }
